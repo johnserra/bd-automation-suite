@@ -1,0 +1,65 @@
+# config/outreach.yaml
+# Configuration for Module 5: Outreach Drafter
+# Templates define tone, structure, and context for AI-drafted messages.
+# All drafts go into x_outreach_draft for human review — never auto-sent.
+templates:
+  stream_c:
+    initial_contact:
+      channel: email
+      tone: "professional, warm, relationship-focused"
+      max_length: 150  # words
+      structure:
+        - "Specific compliment or observation about their business"
+        - "Brief intro — who you are and what you offer"
+        - "Value proposition — why your supplier, why you"
+        - "Soft ask — meeting, samples, or just openness to a conversation"
+      context_to_include:
+        - "x_current_supplier (mention switching value if relevant)"
+        - "x_business_type (tailor language to their industry)"
+        - "description (reference specific products or operations)"
+      example_subject_lines:
+        - "[Something specific about their company] + product question"
+        - "Saw your [product/news] — quick thought"
+
+    sample_followup:
+      channel: email
+      tone: "friendly, brief, curious"
+      max_length: 80
+      structure:
+        - "Check if samples/materials arrived"
+        - "Ask about quality vs current supplier"
+        - "Offer next step (pricing, customization, call)"
+
+  stream_a:
+    initial_contact:
+      channel: email
+      tone: "professional, local, solution-oriented"
+      max_length: 120
+      structure:
+        - "Reference the specific property or location"
+        - "Brief company intro"
+        - "Value prop — revenue increase, operational relief"
+        - "Ask for meeting or call"
+
+  stream_b:
+    initial_contact:
+      channel: email
+      tone: "neighborly, practical, benefit-focused"
+      max_length: 100
+      structure:
+        - "Reference proximity or local connection"
+        - "Specific program offer"
+        - "Concrete benefit"
+        - "Easy next step"
+
+# LLM settings for drafting
+llm:
+  model: "claude-sonnet-4-6"  # Use Sonnet for quality outreach
+  max_tokens: 512
+  system_prompt: |
+    You are drafting outreach emails on behalf of the sender. Write in a natural,
+    human voice. Avoid generic sales language. Be specific, brief, and make it
+    easy for the recipient to respond. Never sound like a mass email.
+
+    Tailor each message using the lead context provided (company description,
+    current suppliers, business type, etc.).

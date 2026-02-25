@@ -1,0 +1,67 @@
+# config/followup_rules.yaml
+# Configuration for Module 6: Follow-up & Nurture Scheduler
+# Rules are evaluated daily against all active leads.
+# Idempotent: duplicate activities are not created if one already exists.
+rules:
+  - name: "Trial check-in"
+    condition:
+      stage: "Trial"
+      days_since: x_sample_sent_date
+      threshold: 7
+    action:
+      create_activity: "Check on trial — did it arrive? Feedback?"
+      priority: high
+
+  - name: "Engagement decay warning"
+    condition:
+      stage: ["Engaged", "Negotiating"]
+      days_since: x_last_personal_contact
+      threshold: 14
+    action:
+      create_activity: "Follow up — 2 weeks since last contact"
+      send_notification: true
+      priority: high
+
+  - name: "Outreach follow-up"
+    condition:
+      stage: "Outreach"
+      days_since: x_last_personal_contact
+      threshold: 5
+    action:
+      create_activity: "Follow up on initial outreach — no response yet"
+      priority: medium
+
+  - name: "Qualified but not contacted"
+    condition:
+      stage: "Qualified"
+      days_since: write_date  # Odoo's last modified date
+      threshold: 3
+    action:
+      create_activity: "Lead qualified 3 days ago — time to reach out"
+      priority: medium
+
+  - name: "Re-engage dormant"
+    condition:
+      stage: "Not Now"
+      days_since: write_date
+      threshold: 180  # 6 months
+    action:
+      move_to_stage: "Research"
+      create_activity: "6-month re-engagement — check if timing is better now"
+      priority: low
+
+  - name: "Proposal follow-up"
+    condition:
+      stage: "Proposal"
+      days_since: x_last_personal_contact
+      threshold: 7
+    action:
+      create_activity: "Follow up on proposal — 1 week since sent"
+      priority: high
+
+# Digest notification settings
+digest:
+  enabled: true
+  channel: email  # email or slack
+  send_time: "08:00"
+  recipient: "user@example.com"  # Replace with your email or Slack webhook

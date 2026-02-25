@@ -1,0 +1,26 @@
+# config/stream_c.yaml
+# BD Stream C: Supplier / Vendor Sourcing
+# Find US companies importing under target HS codes and connect them with your suppliers.
+stream: stream_c
+
+target_profile:
+  industries: ["industry_1", "industry_2", "industry_3"]
+  geography:
+    priority_states: ["NY", "PA", "NJ", "CT", "MA", "OH"]
+    country: "US"
+  size: ["medium", "large"]
+  keywords: ["keyword 1", "keyword 2", "keyword 3"]
+
+data_sources:
+  trade_data:
+    enabled: true
+    hs_codes: ["0000.00", "0000.00"]  # Replace with your target HS codes
+    exclude_suppliers_from: ["US", "CA"]  # Only import companies sourcing from overseas
+  google_maps:
+    enabled: false
+  web_scrape:
+    enabled: true
+    directories: ["industry_directory_1"]
+
+dedup:
+  match_on: ["partner_name", "city"]  # Skip if already in Odoo

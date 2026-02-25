@@ -1,0 +1,29 @@
+# config/stream_a.yaml
+# BD Stream A: Location / Asset Acquisition
+# Find new locations or assets matching your target profile.
+stream: stream_a
+
+target_profile:
+  property_types: ["type_1", "type_2", "mixed_use"]
+  geography:
+    cities: ["City A", "City B", "City C"]
+    radius_miles: 30
+  keywords: ["keyword 1", "keyword 2", "keyword 3"]
+  exclude_operators: ["Your Own Company Name"]  # Don't prospect your own locations
+
+data_sources:
+  trade_data:
+    enabled: false
+  google_maps:
+    enabled: true
+    search_queries:
+      - "search term 1 {city}"
+      - "search term 2 {city}"
+  web_scrape:
+    enabled: true
+    sources: ["directory_1", "directory_2"]
+  real_estate_listings:
+    enabled: true
+
+dedup:
+  match_on: ["partner_name", "street", "city"]

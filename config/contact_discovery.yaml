@@ -1,0 +1,39 @@
+# config/contact_discovery.yaml
+# Configuration for Module 2: Contact Discovery
+target_titles:
+  stream_c:
+    priority_order:
+      - "Procurement Manager"
+      - "Purchasing Manager"
+      - "VP Supply Chain"
+      - "Supply Chain Manager"
+      - "Operations Director"
+      - "Owner"
+      - "President"
+
+  stream_a:
+    priority_order:
+      - "Property Manager"
+      - "Owner"
+      - "Director of Real Estate"
+      - "Asset Manager"
+      - "VP Operations"
+
+  stream_b:
+    priority_order:
+      - "Office Manager"
+      - "Facilities Manager"
+      - "HR Manager"
+      - "Operations Manager"
+      - "General Manager"
+
+search_methods:
+  linkedin_scrape:
+    enabled: true
+    max_results_per_company: 5
+  company_website:
+    enabled: true
+    pages_to_check: ["/about", "/team", "/leadership", "/contact"]
+  email_finder:
+    enabled: true
+    services: ["hunter_io"]  # hunter.io free tier: 25 searches/month

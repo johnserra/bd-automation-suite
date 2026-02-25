@@ -1,0 +1,94 @@
+# config/scoring.yaml
+# Configuration for Module 4: Lead Scoring & Prioritization
+# All business logic stays here — tweak weights without touching code.
+scoring_rules:
+  stream_c:
+    criteria:
+      - field: x_already_importing
+        condition: "== true"
+        points: 25
+        label: "Already imports from overseas"
+      - field: x_import_source_country
+        condition: "in ['CN', 'TW', 'TH', 'VN']"
+        points: 15
+        label: "Imports from switchable origin countries"
+      - field: state_id
+        condition: "in ['NY', 'PA', 'NJ', 'CT', 'MA']"
+        points: 20
+        label: "Priority geography"
+      - field: x_company_size
+        condition: "in ['medium', 'large']"
+        points: 15
+        label: "Right company size"
+      - field: contact_name
+        condition: "is not empty"
+        points: 10
+        label: "Decision maker identified"
+      - field: email_from
+        condition: "is not empty"
+        points: 10
+        label: "Email available"
+      - field: x_enrichment_status
+        condition: "== 'complete'"
+        points: 5
+        label: "Fully enriched"
+    thresholds:
+      qualified: 60  # Auto-move to Qualified stage if score >= 60
+
+  stream_a:
+    criteria:
+      - field: x_current_operator
+        condition: "is empty"
+        points: 25
+        label: "No current operator (easier conversion)"
+      - field: x_estimated_spaces
+        condition: ">= 50"
+        points: 20
+        label: "Sufficient size"
+      - field: city
+        condition: "in ['City A', 'City B']"
+        points: 20
+        label: "Priority market"
+      - field: x_property_type
+        condition: "in ['type_1', 'type_2']"
+        points: 15
+        label: "Preferred property type"
+      - field: contact_name
+        condition: "is not empty"
+        points: 10
+        label: "Owner/manager identified"
+      - field: email_from
+        condition: "is not empty"
+        points: 10
+        label: "Contact info available"
+    thresholds:
+      qualified: 55
+
+  stream_b:
+    criteria:
+      - field: x_business_type
+        condition: "in ['type_1', 'type_2', 'type_3']"
+        points: 25
+        label: "High-value business type"
+      - field: x_product_interest
+        condition: "== 'program_1'"
+        points: 20
+        label: "Primary program interest confirmed"
+      - field: contact_name
+        condition: "is not empty"
+        points: 20
+        label: "Decision maker identified"
+      - field: email_from
+        condition: "is not empty"
+        points: 15
+        label: "Email available"
+      - field: x_enrichment_status
+        condition: "== 'complete'"
+        points: 10
+        label: "Fully enriched"
+      - field: x_company_size
+        condition: "in ['medium', 'large']"
+        points: 10
+        label: "Right company size"
+    thresholds:
+      qualified: 50

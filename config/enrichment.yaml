@@ -1,0 +1,36 @@
+# config/enrichment.yaml
+# Configuration for Module 3: Lead Enrichment
+enrichment_sources:
+  stream_c:
+    - source: trade_data_detail
+      fields_to_update: ["x_already_importing", "x_current_supplier", "x_import_source_country"]
+    - source: company_website
+      fields_to_update: ["description"]  # Add company description/products
+    - source: news_search
+      fields_to_update: ["description"]  # Append recent news
+    - source: linkedin_company
+      fields_to_update: ["x_company_size", "x_company_linkedin"]
+
+  stream_a:
+    - source: county_assessor
+      fields_to_update: ["x_property_type", "x_estimated_spaces"]
+    - source: google_maps_detail
+      fields_to_update: ["description"]
+    - source: news_search
+      fields_to_update: ["description"]
+    - source: market_presence_check
+      fields_to_update: ["x_current_operator"]
+      known_operators:  # List of known operators in your market
+        - "Operator A"
+        - "Operator B"
+        - "Operator C"
+      search_term: "your-industry-term"  # e.g. what to search for on Google Maps
+
+  stream_b:
+    - source: google_maps_detail
+      fields_to_update: ["x_business_type", "description"]
+    - source: company_website
+      fields_to_update: ["x_company_size"]
+
+# Cache web scrape results for this many days to avoid redundant fetches
+cache_ttl_days: 7

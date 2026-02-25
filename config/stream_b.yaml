@@ -1,0 +1,30 @@
+# config/stream_b.yaml
+# BD Stream B: Existing Account / Location Growth
+# Sell services or programs to businesses near your existing locations.
+stream: stream_b
+
+target_profile:
+  business_types:
+    - "type_1"
+    - "type_2"
+    - "type_3"
+    - "type_4"
+  geography:
+    # Populated per-location run — specify your managed facility address
+    radius_miles: 0.5
+  programs:
+    - program_1
+    - program_2
+    - program_3
+
+data_sources:
+  google_maps:
+    enabled: true
+    search_queries:
+      - "businesses near {facility_address}"
+      - "type_1 near {facility_address}"
+  web_scrape:
+    enabled: false
+
+dedup:
+  match_on: ["partner_name", "street", "city"]

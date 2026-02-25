@@ -1,0 +1,25 @@
+# config/reporting.yaml
+# Configuration for Module 7: Pipeline Reporter
+weekly_report:
+  send_to: "user@example.com"  # Replace with your email address
+  include:
+    - pipeline_summary_by_stream  # Leads per stage per BD stream
+    - new_leads_this_week
+    - stage_changes_this_week
+    - leads_needing_attention  # Score > 60 but stage still Research
+    - stale_leads  # No activity in 21+ days
+    - top_5_leads  # Highest scored leads across all streams
+  format: "markdown"  # Drops into Obsidian vault or any markdown viewer
+
+monthly_report:
+  send_to: "user@example.com"  # Replace with your email address
+  include:
+    - all_weekly_metrics
+    - conversion_rates  # Research → Qualified → Outreach → Won
+    - average_days_per_stage
+    - source_effectiveness  # Which data sources produce best leads
+    - score_distribution  # Histogram of lead scores
+  format: "markdown"
+
+# Output directory for saved report files
+output_dir: "~/Documents/reports/bd-automation"
