@@ -1,5 +1,7 @@
 # BD Automation Suite
 
+[![GitHub](https://img.shields.io/badge/GitHub-johnserra%2Fbd--automation--suite-blue?logo=github)](https://github.com/johnserra/bd-automation-suite)
+
 A modular Python automation suite for multi-stream business development pipelines. Odoo CRM is the central data hub; all business logic lives in YAML configs. Nothing is ever auto-sent — outreach drafts are created for human review.
 
 Designed to be adapted to any BD context: swap in your own stream configs, enrichment sources, and scoring criteria without touching Python.
