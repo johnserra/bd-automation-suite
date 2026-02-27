@@ -108,8 +108,11 @@ uv run python -m modules.lead_enrichment.main [--dry-run] [--stream stream_c]
 # Lead scoring
 uv run python -m modules.lead_scoring.main [--dry-run]
 
-# Weekly report
-uv run python -m modules.pipeline_reporter.main --period weekly
+# Outreach drafting (generates drafts via LLM, stores for human review)
+uv run python -m modules.outreach_drafter.main [--dry-run] [--stream stream_c] [--limit 5]
+
+# Pipeline report (weekly or monthly)
+uv run python -m modules.pipeline_reporter.main [--type weekly] [--stream stream_c] [--output ~/reports/report.md]
 ```
 
 ## Running Tests

@@ -20,6 +20,8 @@ uv run python -m modules.followup_scheduler.main [--dry-run] [--stream stream_a]
 uv run python -m modules.prospect_research.main --stream stream_c [--dry-run]
 uv run python -m modules.lead_scoring.main [--dry-run]
 uv run python -m modules.lead_enrichment.main [--dry-run]
+uv run python -m modules.outreach_drafter.main [--dry-run] [--stream stream_c] [--limit N]
+uv run python -m modules.pipeline_reporter.main [--type weekly|monthly] [--stream stream_c] [--output PATH]
 
 # One-time Odoo setup
 uv run python scripts/setup_odoo_fields.py --dry-run
