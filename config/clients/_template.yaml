@@ -17,9 +17,9 @@
 # ---------------------------------------------------------------------------
 # Client identity
 # ---------------------------------------------------------------------------
-client_name: "Acme Foods"                     # Display name (for reports)
-stream_name: "acme_foods"                      # Internal ID — must be snake_case, unique
-contact_email: "jane@acmefoods.com"            # Client contact (for report delivery)
+client_name: "Example Corp"                    # Display name (for reports)
+stream_name: "example_corp"                    # Internal ID — must be snake_case, unique
+contact_email: "contact@example.com"           # Client contact (for report delivery)
 billing_notes: ""                              # Internal — track pricing tier, start date, etc.
 
 # ---------------------------------------------------------------------------
@@ -27,21 +27,21 @@ billing_notes: ""                              # Internal — track pricing tier
 # ---------------------------------------------------------------------------
 prospect_research:
   target_profile:
-    industries: ["food manufacturing"]         # What industry are we targeting for this client?
+    industries: ["your_industry_here"]         # What industry are we targeting for this client?
     geography:
       priority_states: ["NY", "PA", "NJ"]      # US states to focus on
       country: "US"
     size: ["medium", "large"]                  # small / medium / large
-    keywords: ["PET container", "clamshell"]   # Search terms for finding prospects
+    keywords: ["keyword1", "keyword2"]         # Search terms for finding prospects
 
   data_sources:
     importyeti:
-      enabled: true
-      hs_codes: ["3923.30"]                    # Harmonized System codes for their product
+      enabled: false
+      hs_codes: []                             # Harmonized System codes for their product
       exclude_suppliers_from: ["US", "CA"]
     google_maps:
       enabled: false
-      search_queries: []                       # e.g. ["food manufacturer near Syracuse NY"]
+      search_queries: []                       # e.g. ["widget manufacturer near Syracuse NY"]
       location_bias: ""                        # lat,lng for proximity search
     web_scrape:
       enabled: false
@@ -86,22 +86,19 @@ scoring:
     # Each criterion: field (Odoo field), condition, points (int), label.
     # Total should sum to ~100 for a perfect lead.
     # -----------------------------------------------------------------------
-    - field: x_already_importing
-      condition: "== true"
-      points: 25
-      label: "Already imports from overseas"
-    - field: state_id
-      condition: "in ['NY', 'PA', 'NJ']"
-      points: 20
-      label: "Priority geography"
-    - field: x_company_size
-      condition: "in ['medium', 'large']"
-      points: 15
-      label: "Right company size"
-    - field: x_current_supplier
-      condition: "is not empty"
-      points: 15
-      label: "Current supplier known (switching opportunity)"
+    # Examples:
+    # - field: x_already_importing
+    #   condition: "== true"
+    #   points: 25
+    #   label: "Already imports from overseas"
+    # - field: state_id
+    #   condition: "in ['NY', 'PA', 'NJ']"
+    #   points: 20
+    #   label: "Priority geography"
+    # - field: x_company_size
+    #   condition: "in ['medium', 'large']"
+    #   points: 15
+    #   label: "Right company size"
   thresholds:
     qualified: 60                              # Auto-move to Qualified at this score
 
@@ -112,8 +109,7 @@ contact_discovery:
   priority_order:
     - "Procurement Manager"
     - "Purchasing Manager"
-    - "VP Supply Chain"
-    - "Operations Director"
+    - "VP Operations"
     - "Owner"
     - "President"
   # List decision-maker titles in priority order.
@@ -167,7 +163,7 @@ llm:
 # Reporting (injected into config/reporting.yaml)
 # ---------------------------------------------------------------------------
 reporting:
-  send_to: "jane@acmefoods.com"               # Client receives their own report
-  cc: "john@serra.us"                          # You always get a copy
+  send_to: "contact@example.com"               # Client receives their own report
+  cc: "you@yourdomain.com"                     # Agency operator gets a copy
   schedule: "weekly"                           # weekly | monthly
-  output_dir: "reports/acme_foods"             # Isolated report output
+  output_dir: "reports/example_corp"           # Isolated report output
