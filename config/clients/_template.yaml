@@ -1,0 +1,173 @@
+# =============================================================================
+# Client Onboarding Template — BD Automation Suite
+# =============================================================================
+# Copy this file to config/clients/{client_name}.yaml and fill in all sections.
+# Then run: uv run python scripts/onboard_client.py {client_name}
+#
+# The onboard script will:
+#   1. Create config/{stream_name}.yaml (prospect research config)
+#   2. Inject stream sections into scoring.yaml, outreach.yaml, enrichment.yaml,
+#      contact_discovery.yaml, and reporting.yaml
+#   3. Print an Odoo setup checklist
+#
+# After onboarding, the client's leads run through the same 7-module pipeline
+# as every other stream — no code changes needed.
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Client identity
+# ---------------------------------------------------------------------------
+client_name: "Acme Foods"                     # Display name (for reports)
+stream_name: "acme_foods"                      # Internal ID — must be snake_case, unique
+contact_email: "jane@acmefoods.com"            # Client contact (for report delivery)
+billing_notes: ""                              # Internal — track pricing tier, start date, etc.
+
+# ---------------------------------------------------------------------------
+# Prospect research (becomes config/{stream_name}.yaml)
+# ---------------------------------------------------------------------------
+prospect_research:
+  target_profile:
+    industries: ["food manufacturing"]         # What industry are we targeting for this client?
+    geography:
+      priority_states: ["NY", "PA", "NJ"]      # US states to focus on
+      country: "US"
+    size: ["medium", "large"]                  # small / medium / large
+    keywords: ["PET container", "clamshell"]   # Search terms for finding prospects
+
+  data_sources:
+    importyeti:
+      enabled: true
+      hs_codes: ["3923.30"]                    # Harmonized System codes for their product
+      exclude_suppliers_from: ["US", "CA"]
+    google_maps:
+      enabled: false
+      search_queries: []                       # e.g. ["food manufacturer near Syracuse NY"]
+      location_bias: ""                        # lat,lng for proximity search
+    web_scrape:
+      enabled: false
+      directories: []                          # Named directory scrapers to run
+
+  dedup:
+    match_on: ["partner_name", "city"]
+
+# ---------------------------------------------------------------------------
+# Enrichment (injected into config/enrichment.yaml)
+# ---------------------------------------------------------------------------
+enrichment:
+  - source: company_website
+    fields_to_update: ["description"]
+  - source: news_search
+    fields_to_update: ["description"]
+  - source: linkedin_company
+    fields_to_update: ["x_company_size", "x_company_linkedin"]
+  # Add or remove sources per client need. Available sources:
+  #   importyeti_detail, company_website, news_search, linkedin_company,
+  #   google_maps_detail, county_assessor, competitor_check
+
+# ---------------------------------------------------------------------------
+# Lead scoring (injected into config/scoring.yaml)
+# ---------------------------------------------------------------------------
+scoring:
+  criteria:
+    - field: contact_name
+      condition: "is not empty"
+      points: 10
+      label: "Decision maker identified"
+    - field: email_from
+      condition: "is not empty"
+      points: 10
+      label: "Email available"
+    - field: x_enrichment_status
+      condition: "== 'complete'"
+      points: 5
+      label: "Fully enriched"
+    # -----------------------------------------------------------------------
+    # Add client-specific scoring criteria below.
+    # Each criterion: field (Odoo field), condition, points (int), label.
+    # Total should sum to ~100 for a perfect lead.
+    # -----------------------------------------------------------------------
+    - field: x_already_importing
+      condition: "== true"
+      points: 25
+      label: "Already imports from overseas"
+    - field: state_id
+      condition: "in ['NY', 'PA', 'NJ']"
+      points: 20
+      label: "Priority geography"
+    - field: x_company_size
+      condition: "in ['medium', 'large']"
+      points: 15
+      label: "Right company size"
+    - field: x_current_supplier
+      condition: "is not empty"
+      points: 15
+      label: "Current supplier known (switching opportunity)"
+  thresholds:
+    qualified: 60                              # Auto-move to Qualified at this score
+
+# ---------------------------------------------------------------------------
+# Contact discovery (injected into config/contact_discovery.yaml)
+# ---------------------------------------------------------------------------
+contact_discovery:
+  priority_order:
+    - "Procurement Manager"
+    - "Purchasing Manager"
+    - "VP Supply Chain"
+    - "Operations Director"
+    - "Owner"
+    - "President"
+  # List decision-maker titles in priority order.
+  # The first match found for a company wins.
+
+# ---------------------------------------------------------------------------
+# Outreach drafting (injected into config/outreach.yaml)
+# ---------------------------------------------------------------------------
+outreach:
+  initial_contact:
+    channel: email
+    tone: "professional, warm, relationship-focused"
+    max_length: 150                            # words
+    structure:
+      - "Specific observation about their business"
+      - "Brief intro — who the client is and what they offer"
+      - "Value proposition — why switch, why now"
+      - "Soft ask — meeting, samples, or conversation"
+    context_to_include:
+      - "x_current_supplier"
+      - "x_business_type"
+      - "description"
+    example_subject_lines:
+      - "[Something specific about their company] + relevant question"
+      - "Saw your [product/news] — quick thought"
+
+  # Add more templates as the engagement matures:
+  # sample_followup:
+  #   channel: email
+  #   tone: "friendly, brief"
+  #   max_length: 80
+  #   structure:
+  #     - "Check if samples arrived"
+  #     - "Ask about quality vs current supplier"
+  #     - "Offer next step"
+
+# ---------------------------------------------------------------------------
+# LLM settings (per-client overrides, optional)
+# ---------------------------------------------------------------------------
+llm:
+  draft_model: "gemini-2.5-flash"             # FLASH for bulk, SONNET for premium clients
+  enrichment_model: "gemini-2.5-flash"        # Cheapest option for summarization
+  system_prompt: |
+    You are drafting outreach emails on behalf of [CLIENT NAME]. [CLIENT] is a
+    [BRIEF DESCRIPTION OF CLIENT'S BUSINESS AND VALUE PROPOSITION].
+
+    Write in a natural, human voice. Avoid generic sales language. Be specific,
+    brief, and make it easy to respond. Never sound like a mass email.
+
+# ---------------------------------------------------------------------------
+# Reporting (injected into config/reporting.yaml)
+# ---------------------------------------------------------------------------
+reporting:
+  send_to: "jane@acmefoods.com"               # Client receives their own report
+  cc: "john@serra.us"                          # You always get a copy
+  schedule: "weekly"                           # weekly | monthly
+  output_dir: "reports/acme_foods"             # Isolated report output
